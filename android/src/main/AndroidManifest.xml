@@ -1,0 +1,186 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.push.tpns">
+
+    <!-- 应用的其它配置 -->
+    <application>
+        <!-- 应用的其它配置 -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <!-- 【必须】 移动推送 TPNS 默认通知 -->
+        <activity
+            android:name="com.tencent.android.tpush.TpnsActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <data
+                    android:host="${applicationId}"
+                    android:scheme="tpns" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 【必须】 移动推送 TPNS receiver广播接收 -->
+        <receiver
+            android:name="com.tencent.android.tpush.XGPushReceiver"
+            android:process=":xg_vip_service">
+            <intent-filter android:priority="0x7fffffff">
+                <!-- 【必须】 移动推送 TPNS SDK的内部广播 -->
+                <action android:name="com.tencent.android.xg.vip.action.SDK" />
+                <action android:name="com.tencent.android.xg.vip.action.INTERNAL_PUSH_MESSAGE" />
+                <action android:name="com.tencent.android.xg.vip.action.ACTION_SDK_KEEPALIVE" />
+                <!-- 【可选】 系统广播：网络切换 -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <!-- 【可选】 系统广播：开屏 -->
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <!-- 【可选】 一些常用的系统广播，增强移动推送 TPNS service的复活机会，请根据需要选择。当然，您也可以添加App自定义的一些广播让启动service -->
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 【必须】移动推送 TPNS service -->
+        <service
+            android:name="com.tencent.android.tpush.service.XGVipPushService"
+            android:persistent="true"
+            android:process=":xg_vip_service"/>
+        <!-- 【必须】通知 service ，android:name 部分改为包名.XGVIP_PUSH_ACTION -->
+        <service
+            android:name="com.tencent.android.tpush.rpc.XGRemoteService"
+            android:exported="false">
+            <intent-filter>
+                <!-- 【必须】请修改为当前APP名包.XGVIP_PUSH_ACTION -->
+                <action android:name="${applicationId}.XGVIP_PUSH_ACTION" />
+            </intent-filter>
+        </service>
+
+        <!-- 【必须】【注意】authorities 修改为包名.XGVIP_PUSH_AUTH -->
+        <provider
+            android:name="com.tencent.android.tpush.XGPushProvider"
+            android:exported="false"
+            tools:replace="android:authorities"
+            android:authorities="${applicationId}.XGVIP_PUSH_AUTH" />
+
+        <!-- 【必须】【注意】authorities 修改为包名.TPUSH_PROVIDER -->
+        <provider
+            android:name="com.tencent.android.tpush.SettingsContentProvider"
+            android:authorities="${applicationId}.TPUSH_PROVIDER" />
+
+        <!-- 【可选】用于增强保活能力 -->
+        <provider
+            android:name="com.tencent.android.tpush.XGVipPushKAProvider"
+            android:authorities="${applicationId}.AUTH_XGPUSH_KEEPALIVE"
+            android:exported="true" />
+
+        <!-- 【可选】APP实现的Receiver，用于接收消息透传和操作结果的回调，请根据需要添加 -->
+        <!-- YOUR_PACKAGE_PATH.CustomPushReceiver需要改为自己的Receiver： -->
+        <receiver android:name=".PushMessageReceiver">
+            <intent-filter>
+                <!-- 接收消息透传-->
+                <action android:name="com.tencent.android.xg.vip.action.PUSH_MESSAGE" />
+                <!--监听注册、反注册、设置/删除标签、通知被点击等处理结果-->
+                <action android:name="com.tencent.android.xg.vip.action.FEEDBACK" />
+            </intent-filter>
+        </receiver>
+
+        <!-- MQTT START -->
+        <service
+            android:name="com.tencent.tpns.mqttchannel.services.MqttService"
+            android:exported="false"
+            android:process=":xg_vip_service" />
+
+        <provider
+            android:name="com.tencent.tpns.baseapi.base.SettingsContentProvider"
+            android:authorities="${applicationId}.XG_SETTINGS_PROVIDER"
+            android:exported="false" />
+
+        <!-- MQTT END-->
+
+
+
+        <service
+            android:name="com.xiaomi.push.service.XMPushService"
+            android:enabled="true"
+            android:process=":pushservice" />
+        <service
+            android:name="com.xiaomi.push.service.XMJobService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:process=":pushservice" />
+        <!-- 注：此service必须在3.0.1版本以后（包括3.0.1版本）加入 -->
+        <service
+            android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="com.xiaomi.mipush.sdk.MessageHandleService"
+            android:enabled="true" />
+        <!-- 注：此service必须在2.2.5版本以后（包括2.2.5版本）加入 -->
+        <receiver
+            android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.xiaomi.push.service.receivers.PingReceiver"
+            android:exported="false"
+            android:process=":pushservice" >
+            <intent-filter>
+                <action android:name="com.xiaomi.push.PING_TIMER" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver
+            android:exported="true"
+            android:name="com.tencent.android.mipush.XMPushMessageReceiver">
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.ERROR" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+    <!-- 【必须】 移动推送 TPNS SDK所需权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- 【常用】 移动推送 TPNS SDK所需权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+    <!-- 【必须】 移动推送 TPNS SDK 5.0版本所需权限 -->
+    <permission
+        android:name="${applicationId}.permission.XGPUSH_RECEIVE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.XGPUSH_RECEIVE" />
+
+
+    <!-- 注：小米push 需要的权限 begin -->
+    <permission
+        android:name="${applicationId}.permission.MIPUSH_RECEIVE"
+        android:protectionLevel="signature" />
+    <!-- 这里 应用包名 改成app的包名 -->
+    <uses-permission android:name="${applicationId}.permission.MIPUSH_RECEIVE" />
+    <!-- 这里 应用包名 改成app的包名 -->
+    <!-- 注：小米push 需要的权限 end -->
+
+</manifest>

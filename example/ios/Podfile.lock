@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - fluttertpns (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - fluttertpns (from `.symlinks/plugins/fluttertpns/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  fluttertpns:
+    :path: ".symlinks/plugins/fluttertpns/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  fluttertpns: 9d6d6b622b62854517852b752b1f9f65c39c5b7f
+
+PODFILE CHECKSUM: 8e679eca47255a8ca8067c4c67aab20e64cb974d
+
+COCOAPODS: 1.9.1

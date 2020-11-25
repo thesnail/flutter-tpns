@@ -1,0 +1,26 @@
+name: fluttertpns
+description: 一个Android和iOS消息推送的插件
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.20.0 <2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.push.tpns
+        pluginClass: FlutterTpnsPlugin
+      ios:
+        pluginClass: FlutterTpnsPlugin
