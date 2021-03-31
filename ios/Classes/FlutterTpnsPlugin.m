@@ -101,7 +101,11 @@
 }
 
 - (NSString *)getDeviceToken {
-    return _deviceToken;
+    if(_deviceToken){
+        return _deviceToken;
+    }else{
+        return @"";
+    }
 }
 
 #pragma mark - AppDelegate
@@ -124,6 +128,9 @@
         [application registerUserNotificationSettings:settings];
     }
     [application registerForRemoteNotifications];
+    
+    [application setApplicationIconBadgeNumber:0];
+    [application cancelAllLocalNotifications];
     return YES;
 }
 
@@ -134,7 +141,7 @@
         [ret appendFormat:@"%02.2hhx", data[i]];
     }
     _deviceToken = [ret copy];
-     ///NSLog(@"======>注册通知成功  deviceToken:%@",_deviceToken);
+    NSLog(@"======>注册通知成功  deviceToken:%@",_deviceToken);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
@@ -183,6 +190,16 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
     NSLog(@"didReceiveLocalNotification====================> 应用再前台,给出一个提示");
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application{
+    [application setApplicationIconBadgeNumber:0];
+    [application cancelAllLocalNotifications];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application{
+    [application setApplicationIconBadgeNumber:0];
+    [application cancelAllLocalNotifications];
 }
 
 @end

@@ -72,7 +72,6 @@ public class FlutterTpnsPlugin implements FlutterPlugin, MethodCallHandler {
                 application.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-
                 Intent intent = new Intent();
                 //下面这种方案是直接跳转到当前应用的设置界面。
                 //https://blog.csdn.net/ysy950803/article/details/71910806

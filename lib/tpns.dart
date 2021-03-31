@@ -67,6 +67,21 @@ class FlutterTpns {
 
 
   static void requestPermission({@required bool sound,@required bool alert,@required bool badge}) async {
-    await _channel.invokeMethod('requestPermission',{'sound':sound,'alert':alert,'badge':badge});
+    try {
+      await _channel.invokeMethod('requestPermission',{'sound':sound,'alert':alert,'badge':badge});
+    } catch (e) {
+    }
+  }
+
+  ///
+  /// 清楚所有通知
+  ///
+  static void cancelAllNotifaction() async {
+    try {
+      if(Platform.isAndroid){
+        await _channel.invokeMethod('cancelAllNotifaction');
+      }
+    } catch (e) {
+    }
   }
 }
